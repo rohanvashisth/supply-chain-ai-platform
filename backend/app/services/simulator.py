@@ -13,7 +13,9 @@ INSTALLATION_DURATIONS = {
     "Cooling Pump": 15,
     "GPU": 30,
     "Fiber Optics": 15,
-    "Software": 15
+    "Software": 15,
+    "Safety": 15,
+    "Security": 15
 }
 
 def simulate_schedule(

@@ -897,6 +897,8 @@ export default function Home() {
                   <option value="Switchgear">Medium-Voltage Switchgear</option>
                   <option value="Chiller">Chillers & Cooling Towers</option>
                   <option value="UPS">Industrial UPS Systems</option>
+                  <option value="Security">Access Control & Security</option>
+                  <option value="Safety">Fire Suppression & Safety</option>
                 </select>
               </div>
             </div>

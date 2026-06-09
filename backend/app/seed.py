@@ -23,7 +23,14 @@ def seed_db():
             Component(id=8, name="Liquid Cooling CDUs", category="Cooling Pump", base_lead_time_days=90, installation_sequence=5, dependencies="Chillers & Cooling Towers"),
             Component(id=9, name="NVIDIA H100 GPU Racks", category="GPU", base_lead_time_days=180, installation_sequence=6, dependencies="Industrial UPS Systems,Liquid Cooling CDUs"),
             Component(id=10, name="Fiber & Copper Interconnects", category="Fiber Optics", base_lead_time_days=45, installation_sequence=6, dependencies="Industrial UPS Systems"),
-            Component(id=11, name="Software Commissioning & Go-Live", category="Software", base_lead_time_days=15, installation_sequence=7, dependencies="NVIDIA H100 GPU Racks,Fiber & Copper Interconnects"),
+            Component(id=11, name="Software Commissioning & Go-Live", category="Software", base_lead_time_days=15, installation_sequence=7, dependencies="NVIDIA H100 GPU Racks,Fiber & Copper Interconnects,Access Control & Physical Security,Automatic Gas Fire Suppression"),
+            
+            # New products added
+            Component(id=12, name="Automatic Transfer Switches (ATS)", category="Switchgear", base_lead_time_days=150, installation_sequence=3, dependencies="20MW Power Substation"),
+            Component(id=13, name="Computer Room Air Handlers (CRAH)", category="Chiller", base_lead_time_days=120, installation_sequence=5, dependencies="Chillers & Cooling Towers"),
+            Component(id=14, name="Structured Fiber Cabling", category="Fiber Optics", base_lead_time_days=30, installation_sequence=6, dependencies="Industrial UPS Systems"),
+            Component(id=15, name="Access Control & Physical Security", category="Security", base_lead_time_days=45, installation_sequence=6, dependencies="Structured Fiber Cabling"),
+            Component(id=16, name="Automatic Gas Fire Suppression", category="Safety", base_lead_time_days=60, installation_sequence=5, dependencies="Liquid Cooling CDUs"),
         ]
         db.add_all(components)
         db.flush()
@@ -64,6 +71,14 @@ def seed_db():
             
             # Fiber Optics
             Supplier(id=19, name="Corning Inc", category="Fiber Optics", country="USA", reliability_score=0.98, base_cost_usd=80000.0, carbon_footprint_co2=3.0, tariff_exposure_pct=0.0, lead_time_days=45),
+
+            # Security
+            Supplier(id=20, name="Honeywell Security Systems", category="Security", country="USA", reliability_score=0.95, base_cost_usd=150000.0, carbon_footprint_co2=5.0, tariff_exposure_pct=0.0, lead_time_days=45),
+            Supplier(id=21, name="Bosch Security Solutions", category="Security", country="Germany", reliability_score=0.93, base_cost_usd=130000.0, carbon_footprint_co2=8.0, tariff_exposure_pct=5.0, lead_time_days=60),
+
+            # Safety
+            Supplier(id=22, name="Fike Fire Suppression Ltd", category="Safety", country="USA", reliability_score=0.96, base_cost_usd=180000.0, carbon_footprint_co2=6.0, tariff_exposure_pct=0.0, lead_time_days=60),
+            Supplier(id=23, name="Kidde Safety Systems", category="Safety", country="Germany", reliability_score=0.94, base_cost_usd=170000.0, carbon_footprint_co2=7.0, tariff_exposure_pct=5.0, lead_time_days=75),
         ]
         db.add_all(suppliers)
         db.flush()
@@ -171,7 +186,7 @@ def seed_db():
             ),
             Shipment(
                 id=8,
-                component_id=10, # Fiber
+                component_id=10, # Fiber Interconnects
                 supplier_id=19,  # Corning (USA)
                 origin_country="USA",
                 destination="Dallas AI-1",
@@ -182,7 +197,78 @@ def seed_db():
                 estimated_delivery_date=(datetime.date.today() + datetime.timedelta(days=40)).isoformat(),
                 current_lat=42.1,
                 current_lng=-77.0,  # Corning, NY
-            )
+            ),
+            # Shipments for new components
+            Shipment(
+                id=9,
+                component_id=12, # ATS
+                supplier_id=8,   # ABB Europe (Italy)
+                origin_country="Italy",
+                destination="Dallas AI-1",
+                shipping_method="Ocean",
+                port_of_entry="Port of Houston",
+                current_status="In Transit",
+                departure_date=(datetime.date.today() - datetime.timedelta(days=30)).isoformat(),
+                estimated_delivery_date=(datetime.date.today() + datetime.timedelta(days=120)).isoformat(),
+                current_lat=35.5,
+                current_lng=-48.2,  # Atlantic Ocean
+            ),
+            Shipment(
+                id=10,
+                component_id=13, # CRAH
+                supplier_id=11,  # Daikin (Japan)
+                origin_country="Japan",
+                destination="Dallas AI-1",
+                shipping_method="Ocean",
+                port_of_entry="Port of Los Angeles",
+                current_status="In Transit",
+                departure_date=(datetime.date.today() - datetime.timedelta(days=20)).isoformat(),
+                estimated_delivery_date=(datetime.date.today() + datetime.timedelta(days=100)).isoformat(),
+                current_lat=34.50,
+                current_lng=150.20,  # West Pacific Ocean
+            ),
+            Shipment(
+                id=11,
+                component_id=14, # Structured Fiber Cabling
+                supplier_id=19,  # Corning (USA)
+                origin_country="USA",
+                destination="Dallas AI-1",
+                shipping_method="Road",
+                port_of_entry="N/A",
+                current_status="In Transit",
+                departure_date=(datetime.date.today() - datetime.timedelta(days=2)).isoformat(),
+                estimated_delivery_date=(datetime.date.today() + datetime.timedelta(days=28)).isoformat(),
+                current_lat=40.50,
+                current_lng=-82.40,  # Ohio
+            ),
+            Shipment(
+                id=12,
+                component_id=15, # Security
+                supplier_id=20,  # Honeywell Security (USA)
+                origin_country="USA",
+                destination="Dallas AI-1",
+                shipping_method="Road",
+                port_of_entry="N/A",
+                current_status="In Transit",
+                departure_date=(datetime.date.today() - datetime.timedelta(days=5)).isoformat(),
+                estimated_delivery_date=(datetime.date.today() + datetime.timedelta(days=40)).isoformat(),
+                current_lat=35.20,
+                current_lng=-80.80,  # Charlotte, NC
+            ),
+            Shipment(
+                id=13,
+                component_id=16, # Safety
+                supplier_id=22,  # Fike Fire (USA)
+                origin_country="USA",
+                destination="Dallas AI-1",
+                shipping_method="Road",
+                port_of_entry="N/A",
+                current_status="In Transit",
+                departure_date=(datetime.date.today() - datetime.timedelta(days=10)).isoformat(),
+                estimated_delivery_date=(datetime.date.today() + datetime.timedelta(days=50)).isoformat(),
+                current_lat=39.00,
+                current_lng=-94.30,  # Blue Springs, MO
+            ),
         ]
         
         # Calculate initial risk metrics for shipments before adding them
@@ -228,7 +314,7 @@ Energization sequence is strictly gated by the delivery and installation of the 
 Power sub-structure dependency: Substation excavation must complete before transformer pad pouring. The High-Voltage Transformers and Medium-Voltage Switchgear must both be fully energized before backup diesel generators or Industrial UPS units can be commissioned.
 HVAC and Liquid Cooling dependencies: The main Chillers and Cooling Towers must be installed before the Liquid Cooling CDUs (Cooling Distribution Units) can begin fluid loop testing.
 GPU Rack dependencies: NVIDIA H100 GPU Racks cannot be installed in the data hall until both the Industrial UPS systems (clean power) and Liquid Cooling CDUs (heat dissipation) are verified and running.
-Launch gate: Final software commissioning and cluster training testing requires all GPU racks and fiber optics interconnects to be fully operational.""",
+Launch gate: Final software commissioning and cluster training testing requires all GPU racks and fiber optics interconnects to be fully operational. It also requires validation of physical security systems, access controls, and automatic clean-agent clean gas fire suppression systems.""",
                 source_url="https://pm.securesync.internal/dallas-ai-1/schedule-summary.pdf"
             ),
             Document(
